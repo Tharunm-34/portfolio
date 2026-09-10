@@ -1,550 +1,337 @@
-/* =========================================================
-   NAVBAR
-========================================================= */
+/* =====================================================
+   PORTFOLIO JAVASCRIPT
+===================================================== */
 
-const navbar =
-    document.getElementById("navbar");
-
-
-window.addEventListener("scroll", () => {
-
-    if (window.scrollY > 20) {
-
-        navbar.classList.add("scrolled");
-
-    } else {
-
-        navbar.classList.remove("scrolled");
-
-    }
-
-});
+document.addEventListener("DOMContentLoaded", function () {
 
 
+    /* =================================================
+       NAVBAR
+    ================================================= */
 
-/* =========================================================
-   MOBILE MENU
-========================================================= */
-
-const menuToggle =
-    document.getElementById("menuToggle");
-
-const navMenu =
-    document.getElementById("navMenu");
+    const navbar =
+        document.getElementById("navbar");
 
 
-menuToggle.addEventListener("click", () => {
+    window.addEventListener("scroll", function () {
 
-    navMenu.classList.toggle("open");
+        if (window.scrollY > 30) {
 
-});
+            navbar.classList.add("scrolled");
 
+        } else {
 
-document
-    .querySelectorAll("#navMenu a")
-    .forEach(link => {
+            navbar.classList.remove("scrolled");
 
-        link.addEventListener("click", () => {
-
-            navMenu.classList.remove("open");
-
-        });
+        }
 
     });
 
 
 
-/* =========================================================
-   CURSOR GLOW
-========================================================= */
+    /* =================================================
+       MOBILE MENU
+    ================================================= */
 
-const cursorGlow =
-    document.querySelector(".cursor-glow");
+    const menuToggle =
+        document.getElementById("menuToggle");
 
-
-document.addEventListener("mousemove", event => {
-
-    cursorGlow.style.left =
-        `${event.clientX}px`;
-
-    cursorGlow.style.top =
-        `${event.clientY}px`;
-
-});
+    const navMenu =
+        document.getElementById("navMenu");
 
 
+    if (menuToggle && navMenu) {
 
-/* =========================================================
-   SCROLL REVEAL
-========================================================= */
+        menuToggle.addEventListener(
+            "click",
+            function () {
 
-const observer =
-    new IntersectionObserver(
+                navMenu.classList.toggle(
+                    "active"
+                );
 
-        entries => {
+            }
+        );
 
-            entries.forEach(entry => {
 
-                if (entry.isIntersecting) {
+        const navLinks =
+            navMenu.querySelectorAll("a");
 
-                    entry.target.classList.add(
-                        "visible"
-                    );
 
-                    observer.unobserve(
-                        entry.target
+        navLinks.forEach(function (link) {
+
+            link.addEventListener(
+                "click",
+                function () {
+
+                    navMenu.classList.remove(
+                        "active"
                     );
 
                 }
+            );
 
-            });
-
-        },
-
-        {
-            threshold: .12
-        }
-
-    );
-
-
-document
-    .querySelectorAll(".reveal")
-    .forEach((element, index) => {
-
-        element.style.transitionDelay =
-            `${Math.min(index % 5, 4) * 70}ms`;
-
-        observer.observe(element);
-
-    });
-
-
-
-/* =========================================================
-   PARTICLE SYSTEM
-========================================================= */
-
-const canvas =
-    document.getElementById(
-        "particleCanvas"
-    );
-
-const ctx =
-    canvas.getContext("2d");
-
-
-let particles = [];
-
-
-let mouse = {
-
-    x: null,
-
-    y: null,
-
-    radius: 150
-
-};
-
-
-
-/* =========================================================
-   CANVAS RESIZE
-========================================================= */
-
-function resizeCanvas() {
-
-    canvas.width =
-        window.innerWidth;
-
-    canvas.height =
-        window.innerHeight;
-
-}
-
-
-resizeCanvas();
-
-
-window.addEventListener(
-    "resize",
-    resizeCanvas
-);
-
-
-
-/* =========================================================
-   MOUSE
-========================================================= */
-
-window.addEventListener(
-    "mousemove",
-    event => {
-
-        mouse.x =
-            event.clientX;
-
-        mouse.y =
-            event.clientY;
-
-    }
-);
-
-
-window.addEventListener(
-    "mouseout",
-    () => {
-
-        mouse.x = null;
-
-        mouse.y = null;
-
-    }
-);
-
-
-
-/* =========================================================
-   PARTICLE CLASS
-========================================================= */
-
-class Particle {
-
-    constructor() {
-
-        this.x =
-            Math.random() *
-            canvas.width;
-
-        this.y =
-            Math.random() *
-            canvas.height;
-
-        this.size =
-            Math.random() *
-            1.8 + .4;
-
-        this.speedX =
-            (Math.random() - .5) *
-            .35;
-
-        this.speedY =
-            (Math.random() - .5) *
-            .35;
-
-        this.opacity =
-            Math.random() *
-            .6 + .2;
+        });
 
     }
 
 
-    update() {
 
-        this.x +=
-            this.speedX;
+    /* =================================================
+       SCROLL REVEAL
+       
+       IMPORTANT:
+       Elements are visible by default.
+       JS only adds animation.
+    ================================================= */
 
-        this.y +=
-            this.speedY;
-
-
-
-        /* Screen wrapping */
-
-        if (this.x < 0)
-            this.x = canvas.width;
+    const revealElements =
+        document.querySelectorAll(".reveal");
 
 
-        if (this.x > canvas.width)
-            this.x = 0;
+    if ("IntersectionObserver" in window) {
 
+        const observer =
+            new IntersectionObserver(
+                function (entries) {
 
-        if (this.y < 0)
-            this.y = canvas.height;
+                    entries.forEach(
+                        function (entry) {
 
+                            if (
+                                entry.isIntersecting
+                            ) {
 
-        if (this.y > canvas.height)
-            this.y = 0;
+                                entry.target.classList.add(
+                                    "show"
+                                );
 
+                                entry.target.classList.remove(
+                                    "animate"
+                                );
 
+                            }
 
-        /* Mouse interaction */
-
-        if (
-            mouse.x !== null &&
-            mouse.y !== null
-        ) {
-
-            const dx =
-                this.x -
-                mouse.x;
-
-            const dy =
-                this.y -
-                mouse.y;
-
-            const distance =
-                Math.sqrt(
-                    dx * dx +
-                    dy * dy
-                );
-
-
-            if (
-                distance <
-                mouse.radius
-            ) {
-
-                const angle =
-                    Math.atan2(
-                        dy,
-                        dx
+                        }
                     );
 
-
-                const force =
-                    (
-                        mouse.radius -
-                        distance
-                    ) /
-                    mouse.radius;
+                },
+                {
+                    threshold: 0.12
+                }
+            );
 
 
-                this.x +=
-                    Math.cos(angle) *
-                    force *
-                    1.8;
+        revealElements.forEach(
+            function (element) {
 
+                element.classList.add(
+                    "animate"
+                );
 
-                this.y +=
-                    Math.sin(angle) *
-                    force *
-                    1.8;
+                observer.observe(
+                    element
+                );
 
             }
-
-        }
-
-    }
-
-
-    draw() {
-
-        ctx.beginPath();
-
-
-        ctx.arc(
-
-            this.x,
-
-            this.y,
-
-            this.size,
-
-            0,
-
-            Math.PI * 2
-
         );
 
+    } else {
 
-        ctx.fillStyle =
-            `rgba(
-                150,
-                140,
-                255,
-                ${this.opacity}
-            )`;
+        revealElements.forEach(
+            function (element) {
 
+                element.classList.add(
+                    "show"
+                );
 
-        ctx.fill();
-
-    }
-
-}
-
-
-
-/* =========================================================
-   CREATE PARTICLES
-========================================================= */
-
-function createParticles() {
-
-    particles = [];
-
-
-    const amount =
-        window.innerWidth < 700
-            ? 55
-            : 110;
-
-
-    for (
-        let i = 0;
-        i < amount;
-        i++
-    ) {
-
-        particles.push(
-            new Particle()
+            }
         );
 
     }
 
-}
 
 
-createParticles();
+    /* =================================================
+       CURSOR GLOW
+    ================================================= */
+
+    const cursorGlow =
+        document.querySelector(
+            ".cursor-glow"
+        );
+
+
+    if (cursorGlow) {
+
+        document.addEventListener(
+            "mousemove",
+            function (event) {
+
+                cursorGlow.style.left =
+                    event.clientX + "px";
+
+                cursorGlow.style.top =
+                    event.clientY + "px";
+
+            }
+        );
+
+    }
 
 
 
-/* =========================================================
-   CONNECT PARTICLES
-========================================================= */
+    /* =================================================
+       CERTIFICATE IMAGE PROTECTION
+    ================================================= */
 
-function connectParticles() {
-
-    for (
-        let a = 0;
-        a < particles.length;
-        a++
-    ) {
+    const certificateImages =
+        document.querySelectorAll(
+            ".certificate-image"
+        );
 
 
-        for (
-            let b = a + 1;
-            b < particles.length;
-            b++
-        ) {
+    certificateImages.forEach(
+        function (image) {
+
+            image.setAttribute(
+                "draggable",
+                "false"
+            );
 
 
-            const dx =
-                particles[a].x -
-                particles[b].x;
+            image.addEventListener(
+                "contextmenu",
+                function (event) {
+
+                    event.preventDefault();
+
+                }
+            );
 
 
-            const dy =
-                particles[a].y -
-                particles[b].y;
+            image.addEventListener(
+                "dragstart",
+                function (event) {
+
+                    event.preventDefault();
+
+                }
+            );
+
+        }
+    );
 
 
-            const distance =
-                Math.sqrt(
-                    dx * dx +
-                    dy * dy
-                );
 
+    /* =================================================
+       PREVENT RIGHT CLICK
+    ================================================= */
 
-            if (distance < 110) {
+    document.addEventListener(
+        "contextmenu",
+        function (event) {
 
+            if (
+                event.target.tagName === "IMG"
+            ) {
 
-                const opacity =
-                    1 -
-                    distance / 110;
-
-
-                ctx.beginPath();
-
-
-                ctx.strokeStyle =
-                    `rgba(
-                        124,
-                        108,
-                        255,
-                        ${opacity * .12}
-                    )`;
-
-
-                ctx.lineWidth =
-                    .6;
-
-
-                ctx.moveTo(
-
-                    particles[a].x,
-
-                    particles[a].y
-
-                );
-
-
-                ctx.lineTo(
-
-                    particles[b].x,
-
-                    particles[b].y
-
-                );
-
-
-                ctx.stroke();
+                event.preventDefault();
 
             }
 
         }
-
-    }
-
-}
-
-
-
-/* =========================================================
-   PARTICLE ANIMATION
-========================================================= */
-
-function animateParticles() {
-
-
-    ctx.clearRect(
-
-        0,
-
-        0,
-
-        canvas.width,
-
-        canvas.height
-
     );
 
 
-    particles.forEach(
-        particle => {
 
-            particle.update();
+    /* =================================================
+       IMAGE ERROR CHECK
+    ================================================= */
 
-            particle.draw();
+    const images =
+        document.querySelectorAll(
+            "img"
+        );
+
+
+    images.forEach(
+        function (image) {
+
+            image.addEventListener(
+                "error",
+                function () {
+
+                    console.warn(
+                        "Image not found:",
+                        image.getAttribute(
+                            "src"
+                        )
+                    );
+
+                }
+            );
 
         }
     );
 
 
-    connectParticles();
+
+    /* =================================================
+       SMOOTH NAVIGATION
+    ================================================= */
+
+    document.querySelectorAll(
+        'a[href^="#"]'
+    ).forEach(
+        function (link) {
+
+            link.addEventListener(
+                "click",
+                function (event) {
+
+                    const targetId =
+                        this.getAttribute(
+                            "href"
+                        );
 
 
-    requestAnimationFrame(
-        animateParticles
+                    const target =
+                        document.querySelector(
+                            targetId
+                        );
+
+
+                    if (target) {
+
+                        event.preventDefault();
+
+
+                        target.scrollIntoView({
+                            behavior: "smooth"
+                        });
+
+                    }
+
+                }
+            );
+
+        }
     );
 
-}
 
 
-animateParticles();
+    /* =================================================
+       CONSOLE
+    ================================================= */
 
+    console.log(
+        "%cTHARUN M Portfolio",
+        "color:#62d9ff;font-size:20px;font-weight:bold;"
+    );
 
+    console.log(
+        "Website loaded successfully."
+    );
 
-/* =========================================================
-   RESPONSIVE PARTICLES
-========================================================= */
-
-window.addEventListener(
-    "resize",
-    () => {
-
-        createParticles();
-
-    }
-);
+});
